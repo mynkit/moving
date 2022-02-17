@@ -123,10 +123,10 @@ SynthDef("FastSinSynth", {
 	sig1 = SinOsc.ar(freq).dup;
 	sig2 = SinOsc.ar(freq * detune).dup * 0.1;
 	sound = (sig1 + sig2) * 0.5;
-	panFreq = 2 + EnvGen.ar(Env.linen(0, 0, 0.6, 5, -6), timeScale:sustain);
+	panFreq = 0.6 + EnvGen.ar(Env.linen(0, 0, 0.6, 10, -7), timeScale:sustain);
 	// sound = Pan2.ar(sound, LFPar.kr(panFreq)); // pan
 	sound = sound*LFPar.kr(panFreq); // tremoro
-	env = EnvGen.ar(Env.linen(0, 0, 0.6, 1, -5), timeScale:sustain, doneAction:2);
+	env = EnvGen.ar(Env.linen(0, 0, 0.6, 1, -2), timeScale:sustain, doneAction:2);
 	OffsetOut.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env));
 }).add;
 
@@ -220,7 +220,7 @@ SynthDef(\zure, {|out, sustain=1, pan, accelerate, freq, decay=0, slide=1, detun
 	var sound = VarSaw.ar(basefreq, 0, Line.ar(0,0.5,sustain*20/slide));
 	var sound2 = VarSaw.ar(basefreq*(detune/100+1), 0, Line.ar(0,0.5,sustain*20/slide));
 	var sound3 = VarSaw.ar(basefreq*(-1*detune/100+1), 0, Line.ar(0,0.5,sustain*20/slide));
-	var lpfEnv = 400 + EnvGen.ar(Env.linen(0, 0, 1.0, 2200, -25), timeScale:sustain);
+	var lpfEnv = 400 + EnvGen.ar(Env.linen(0, 0, 0.5, 2000, -30), timeScale:sustain);
 	sound = sound - DelayN.ar(sound2,0.2, Line.ar(0,1,5*sustain/slide)/basefreq)
 	+ DelayN.ar(sound3,0.2, Line.ar(0,1,20*sustain/slide)/basefreq);
 	sound = LPF.ar(sound, lpfEnv);
