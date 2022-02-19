@@ -92,6 +92,9 @@ mix
 mix f p = stack [p, f $ p]
 :}
 
+:{
+mod' y x = mod x y
+:}
 
 :{
 let elem' xs x = elem x xs
