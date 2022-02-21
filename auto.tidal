@@ -1,11 +1,10 @@
 setcps (140/60/4)
 
-all $ (|* gain 1.1)
-
-all $ (|- n 5)
+all $ (|+ n (-5)).(|* gain 1.1)
 
 do
   resetCyclesTo (-2-0.05)
+  setI "sodaN" 0
   let
     bpm = 140
   d10
@@ -50,6 +49,7 @@ do
     # hpf 100
     # freeverb 0.8 # size 0.8
   d3 -- light
+    $ (|+ n 5)
     $ when ((/=6).(mod' 16)) (|* gain 0)
     $ mix ((|- n 2).(|* gain 0.5))
     $ mix ((|+ n 7).(|* gain 0.4))
@@ -74,27 +74,31 @@ do
     ,
     when ((/=3).(mod' 4)) (|* gain 0) $ s "~ ~ [~ click]" # gain 1.6
     ]
-    # speed "0.8 1 0.8 1" # n 2 # pan 0.5 # lpf 300
+    # speed "0.8 1 0.8 1" # pan 0.5 # lpf 300
   d6 -- railroad
     $ when (<6) (|* gain 0)
     $ when (==6) (|* gain 0.7)
     $ when (==7) (|* gain 0.8)
     $ when (==8) (|* gain 0.9)
+    -- $ when (>8) (someCyclesBy 0.1 (|* gain 0))
     $ someCyclesBy 0.1 (|* speed (-1))
     $ s "railroad" # n (irand 3)
     # speed 0.94
     # lpf 1000
     # cut 1
-    # hpf (range 700 250 (slow 20 $ (sine)))
-    # gain (range 0.5 0.8 (slow 20 $ (sine)))
-    # pan (slow 20 $ sine)
+    # hpf (range 700 250 (slow 16 $ (cosine)))
+    # gain (range 0.5 0.8 (slow 16 $ (cosine)))
+    # pan (slow 16 $ cosine)
   d7 -- ding-ding
     $ when (<4) (|* gain 0)
-    $ s "ding*4" # gain 0.55 # cut 1 # pan 0.6 # lpf 800 # up (-1)
+    $ when ((/=9).(mod' 16)) (|* gain 0)
+    $ fast 4
+    $ s "ding" # gain 0.55 # cut 1 # pan 0.4 # lpf 800 # up (2)
   d8 -- lighter
     $ when (<8) (|* gain 0)
     $ (0.25 <~)
-    $ s "lighter/8" # gain 1.25 # pan (range 0.1 0.3 rand) # lpf 5000
+    $ someCyclesBy 0.2 ((# speed (-1)).(|- pan 1))
+    $ s "lighter/16" # gain 1.25 # pan (range 0.1 0.3 rand) # lpf 5000
 
 once
   $ (|- n 5)
