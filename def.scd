@@ -117,15 +117,15 @@ SynthDef("SinOscSynthBend", {
 
 SynthDef("FastSinSynth", {
 	arg out, sustain=1, decay=0, pan=0, freq=110, accelerate=0, vibratoFreq=10, vibratoDepth=0;
-	var fglide, detune, sound, sig1, sig2, env, panFreq;
+	var fglide, detune, sound, sig1, sig2, env, parFreq;
 	detune = 1.0;
 	freq = freq *(1+((LFPar.ar(vibratoFreq)+1)*(vibratoDepth/50)));
 	sig1 = SinOsc.ar(freq).dup;
 	sig2 = SinOsc.ar(freq * detune).dup * 0.1;
 	sound = (sig1 + sig2) * 0.5;
-	panFreq = 0.6 + EnvGen.ar(Env.linen(0, 0, 0.6, 10, -7), timeScale:sustain);
-	// sound = Pan2.ar(sound, LFPar.kr(panFreq)); // pan
-	sound = sound*LFPar.kr(panFreq); // tremoro
+	parFreq = 0.8 + EnvGen.ar(Env.linen(0, 0, 0.6, 10, -7), timeScale:sustain);
+	pan = EnvGen.ar(Env.linen(0, 0, 0.6, (pan), 1), timeScale:sustain); // pan slide
+	sound = sound*LFPar.kr(parFreq); // tremoro
 	env = EnvGen.ar(Env.linen(0, 0, 0.6, 1, -2), timeScale:sustain, doneAction:2);
 	OffsetOut.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env));
 }).add;
