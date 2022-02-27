@@ -93,6 +93,13 @@ mix f p = stack [p, f $ p]
 :}
 
 :{
+ifb :: (Bool) -> (Pattern a -> Pattern a) ->  Pattern a -> Pattern a
+ifb test f p = splitQueries $ p {query = apply}
+  where apply st | test = query (f p) st
+                 | otherwise = query p st
+:}
+
+:{
 mod' y x = mod x y
 :}
 
