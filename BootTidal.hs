@@ -60,7 +60,8 @@ let p = streamReplace tidal
 :}
 
 :{
-let setI = streamSetI tidal
+let getState = streamGet tidal
+    setI = streamSetI tidal
     setF = streamSetF tidal
     setS = streamSetS tidal
     setR = streamSetR tidal
