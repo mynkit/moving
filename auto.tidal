@@ -4,15 +4,22 @@ all $ (|+ n (0)).(|* gain 1.2)
 
 do
   resetCyclesTo (-2-0.05)
+  setF "sodaN" 0
+  setF "parkN" 0
   let
     bpm = 140
+    trainStartCycle = 8
     parkStartCycle = 36
+    trainStopCycle = parkStartCycle + 20
+    solo11Cycle = 84
   d10
+    $ when (>=solo11Cycle) (|* gain 0)
     $ s "soda" # nTake "sodaN" [0..35] # gain 1
   d11
     $ when (<parkStartCycle) (const $ s "~")
     $ s "park" # nTake "parkN" [1..30] # gain 1
   d1 -- melody
+    $ when (>=solo11Cycle) (|* gain 0)
     $ (|+ n (-5))
     $ when (<0) (# gain 0)
     $ when (==0) (while "t f f f f f" (# gain 0))
@@ -34,6 +41,7 @@ do
   d2 -- chord
     $ (|+ n (-5))
     $ when (>16) (whenmod 8 4 (|+ n (-2)))
+    $ when (>=solo11Cycle) (|* gain 0)
     $ (|* gain 0.39)
     $ stack [
     when (==3) (# gain 1)
@@ -55,6 +63,7 @@ do
     # freeverb 0.8 # size 0.8
   d3 -- light
     $ when ((/=6).(mod' 16)) (|* gain 0)
+    $ when (>=solo11Cycle) (|* gain 0)
     $ mix ((|- n 2).(|* gain 0.5))
     $ mix ((|+ n 7).(|* gain 0.4))
     $ mix ((|+ n 12).(|* gain 0.9))
@@ -65,11 +74,13 @@ do
     # pan 1
     # room 0.8 # size 0.2
   d4 -- bass
+    $ when (>=solo11Cycle) (|* gain 0)
     $ "~"
   d5 -- bassdrum
     $ (|* gain 1.1)
     $ when (<4) (|* gain 0)
     $ when (==4) (while "t f" (|* gain 0))
+    $ when (>=solo11Cycle) (|* gain 0)
     $ stack[
     s "click/2 ~ ~" # gain 1.6
     ,
@@ -81,11 +92,11 @@ do
     ]
     # speed "0.8 1 0.8 1" # pan 0.5 # lpf 300
   d6 -- railroad
-    $ when (<6) (|* gain 0)
-    $ when (==6) (|* gain 0.7)
-    $ when (==7) (|* gain 0.8)
-    $ when (==8) (|* gain 0.9)
-    $ when (>=(parkStartCycle+4)) (|* gain 0)
+    $ when (<trainStartCycle) (|* gain 0)
+    $ when (==trainStartCycle) (|* gain 0.7)
+    $ when (==(trainStartCycle+1)) (|* gain 0.8)
+    $ when (==(trainStartCycle+2)) (|* gain 0.9)
+    $ when (>=(trainStopCycle)) (|* gain 0)
     $ someCyclesBy 0.1 (|* speed (-1))
     $ s "railroad" # n (irand 3)
     # speed 0.94
@@ -95,25 +106,26 @@ do
     # gain (range 0.5 0.8 (slow 16 $ (cosine)))
     # pan (slow 16 $ cosine)
   d7 -- ding-ding
-    $ when (>=(parkStartCycle+4)) (|* gain 0)
-    $ when (<4) (|* gain 0)
+    $ when (<trainStartCycle) (|* gain 0)
     $ when ((/=9).(mod' 16)) (|* gain 0)
+    $ when (>=(trainStopCycle)) (|* gain 0)
     $ s "ding*4" # gain 0.55 # cut 1 # pan 0.3 # lpf 800 # up (2)
   d8 -- lighter
     $ when (<8) (|* gain 0)
+    $ when (>=solo11Cycle) (|* gain 0)
     $ (0.25 ~>)
-    $ when (==(parkStartCycle+2)) (const $ s "lighter lighter ~" # gain 1.4 # pan "0 0.95 1" # lpf 5000 # cut 1)
+    $ when (==(trainStopCycle-2)) (const $ s "lighter lighter ~" # gain 1.4 # pan "0 0.95 1" # lpf 5000 # cut 1)
     $ someCyclesBy 0.2 ((# speed (-1)).(|- pan 1))
     $ s "lighter/16" # gain 1.25 # pan (range 0.1 0.3 rand) # lpf 5000
 
 once
-  $ (|- n 5)
-  $ (|* gain 1.2)
+  $ (|- n 10)
+  $ (|* gain 1.1)
   $ stack [
     mix ((|+ n 12).(|* gain 0.7))
     $ s "zure" # sustain 15 # n "<e4,b4,g4,d4>"
     # gain 0.5
-    # real 0.4 # imag 0
+    # real 0.5 # imag 0
     ,
     mix ((|+ n 12).(|* gain 0.5))
     $ s "SinOscSynthBend" # sustain 18 # n "<a2>"
