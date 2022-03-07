@@ -3,7 +3,13 @@ setcps (140/60/4)
 all $ (|+ n (0)).(|* gain 1.2)
 
 do
-  resetCyclesTo (-2-0.05)
+  d10
+    $ s "soda" # gain 0 # cut 1
+  d11
+    $ s "breath" # gain 0.6 # cut 1
+
+do
+  resetCyclesTo (80-0.05)
   setF "sodaN" 0
   setF "parkN" 0
   let
@@ -12,12 +18,32 @@ do
     parkStartCycle = 36
     trainStopCycle = parkStartCycle + 20
     solo11Cycle = 84
+    underwater = 10
   d10
-    $ when (>=solo11Cycle) (|* gain 0)
+    $ when (elem' [solo11Cycle..solo11Cycle+6]) (|* gain 0)
+    $ when (>=solo11Cycle+7) (
+      const
+      $ (# legato 1)
+      $ (# lpf (3000/underwater))
+      $ ((# cut 1).(# speed (1/underwater)).(|* gain (1+(underwater/20))))
+      $ s "soda" # nTake "sodaN" [0..35])
     $ s "soda" # nTake "sodaN" [0..35] # gain 1
   d11
     $ when (<parkStartCycle) (const $ s "~")
-    $ s "park" # nTake "parkN" [1..30] # gain 1
+    $ when (==solo11Cycle+4) (const $ s "park:23")
+    $ when (elem' [solo11Cycle+5..solo11Cycle+6]) (
+      const $ s "[park23:6 park23:7]*4")
+    $ when (>=solo11Cycle+7) (
+      const
+      $ (# legato 1)
+      $ ((# lpf (3000/underwater)).(# hpf 900))
+      $ (|* gain (1+(underwater/13)))
+      $ s "park" # nTake "parkN" [1..30]
+      # speed (1-0.07*(underwater-1))
+      # scReverb (0.03*(underwater-1)))
+    $ s "park"
+    # nTake "parkN" [1..30]
+    # gain 1
   d1 -- melody
     $ when (>=solo11Cycle) (|* gain 0)
     $ (|+ n (-5))
@@ -77,7 +103,7 @@ do
     $ when (>=solo11Cycle) (|* gain 0)
     $ "~"
   d5 -- bassdrum
-    $ (|* gain 1.1)
+    $ (|* gain 1.2)
     $ when (<4) (|* gain 0)
     $ when (==4) (while "t f" (|* gain 0))
     $ when (>=solo11Cycle) (|* gain 0)
