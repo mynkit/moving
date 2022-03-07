@@ -3,13 +3,15 @@ setcps (140/60/4)
 all $ (|+ n (0)).(|* gain 1.2)
 
 do
+  -- Last statement to execute.
+  setF "breathGain" 0
   d10
     $ s "soda" # gain 0 # cut 1
   d11
-    $ s "breath" # gain 0.6 # cut 1
+    $ s "breath" # gainTake "breathGain" [0.6,0,0,0,0,0] # cut 1
 
 do
-  resetCyclesTo (80-0.05)
+  resetCyclesTo (-2-0.05)
   setF "sodaN" 0
   setF "parkN" 0
   let
@@ -18,7 +20,7 @@ do
     parkStartCycle = 36
     trainStopCycle = parkStartCycle + 20
     solo11Cycle = 84
-    underwater = 10
+    underwater = 2 -- The larger this value is, the deeper it dives.
   d10
     $ when (elem' [solo11Cycle..solo11Cycle+6]) (|* gain 0)
     $ when (>=solo11Cycle+7) (
