@@ -22,7 +22,7 @@ do
     solo11Cycle = 84
     underwater = 2 -- The larger this value is, the deeper it dives.
   d10
-    $ when (elem' [solo11Cycle..solo11Cycle+6]) (|* gain 0)
+    $ when (flip elem [solo11Cycle..solo11Cycle+6]) (|* gain 0)
     $ when (>=solo11Cycle+7) (
       const
       $ (# legato 1)
@@ -33,7 +33,7 @@ do
   d11
     $ when (<parkStartCycle) (const $ s "~")
     $ when (==solo11Cycle+4) (const $ s "park:23")
-    $ when (elem' [solo11Cycle+5..solo11Cycle+6]) (
+    $ when (flip elem [solo11Cycle+5..solo11Cycle+6]) (
       const $ s "[park23:6 park23:7]*4")
     $ when (>=solo11Cycle+7) (
       const
@@ -90,7 +90,7 @@ do
     # hpf 100
     # freeverb 0.8 # size 0.8
   d3 -- light
-    $ when ((/=6).(mod' 16)) (|* gain 0)
+    $ when ((/=6).(flip mod 16)) (|* gain 0)
     $ when (>=solo11Cycle) (|* gain 0)
     $ mix ((|- n 2).(|* gain 0.5))
     $ mix ((|+ n 7).(|* gain 0.4))
@@ -112,11 +112,11 @@ do
     $ stack[
     s "click/2 ~ ~" # gain 1.6
     ,
-    when ((/=1).(mod' 4)) (|* gain 0) $ s "~ ~ click" # gain 1.6
+    when ((/=1).(flip mod 4)) (|* gain 0) $ s "~ ~ click" # gain 1.6
     ,
-    when (<12) (|* gain 0) $ when ((==0).(mod' 2)) (|* gain 0) $ s "click" # gain 1.6
+    when (<12) (|* gain 0) $ when ((==0).(flip mod 2)) (|* gain 0) $ s "click" # gain 1.6
     ,
-    when ((/=3).(mod' 4)) (|* gain 0) $ s "~ ~ [~ click]" # gain 1.6
+    when ((/=3).(flip mod 4)) (|* gain 0) $ s "~ ~ [~ click]" # gain 1.6
     ]
     # speed "0.8 1 0.8 1" # pan 0.5 # lpf 300
   d6 -- railroad
@@ -135,7 +135,7 @@ do
     # pan (slow 16 $ cosine)
   d7 -- ding-ding
     $ when (<trainStartCycle) (|* gain 0)
-    $ when ((/=9).(mod' 16)) (|* gain 0)
+    $ when ((/=9).(flip mod 16)) (|* gain 0)
     $ when (>=(trainStopCycle)) (|* gain 0)
     $ s "ding*4" # gain 0.55 # cut 1 # pan 0.3 # lpf 800 # up (2)
   d8 -- lighter
