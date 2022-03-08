@@ -11,7 +11,7 @@ do
     $ s "breath" # gainTake "breathGain" [0.6,0,0,0,0,0] # cut 1
 
 do
-  resetCyclesTo (-2-0.05)
+  resetCyclesTo (35-0.05)
   setF "sodaN" 0
   setF "parkN" 0
   let
@@ -22,8 +22,8 @@ do
     solo11Cycle = 84
     underwater = 2 -- The larger this value is, the deeper it dives.
   d10
-    $ when (flip elem [solo11Cycle..solo11Cycle+6]) (|* gain 0)
-    $ when (>=solo11Cycle+7) (
+    $ when (flip elem [solo11Cycle..solo11Cycle+7]) (|* gain 0)
+    $ when (>=solo11Cycle+8) (
       const
       $ (# legato 1)
       $ (# lpf (3000/underwater))
@@ -32,10 +32,10 @@ do
     $ s "soda" # nTake "sodaN" [0..35] # gain 1
   d11
     $ when (<parkStartCycle) (const $ s "~")
-    $ when (==solo11Cycle+4) (const $ s "park:23")
-    $ when (flip elem [solo11Cycle+5..solo11Cycle+6]) (
+    $ when (==solo11Cycle+5) (const $ s "park:23")
+    $ when (flip elem [solo11Cycle+6..solo11Cycle+7]) (
       const $ s "[park23:6 park23:7]*4")
-    $ when (>=solo11Cycle+7) (
+    $ when (>=solo11Cycle+8) (
       const
       $ (# legato 1)
       $ ((# lpf (3000/underwater)).(# hpf 900))
