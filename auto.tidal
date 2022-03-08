@@ -11,7 +11,7 @@ do
     $ s "breath" # gainTake "breathGain" [0.6,0,0,0,0,0] # cut 1
 
 do
-  resetCyclesTo (35-0.05)
+  resetCyclesTo (-2-0.05)
   setF "sodaN" 0
   setF "parkN" 0
   let
